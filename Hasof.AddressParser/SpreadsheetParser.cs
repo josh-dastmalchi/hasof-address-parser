@@ -19,10 +19,10 @@ namespace Hasof.AddressParser
         public List<Vendor> Parse(IExcelDataReader reader)
         {
             var customers = new List<Vendor>();
-
+            SetIndexesBasedOnHeaders(reader);
             do
             {
-                SetIndexesBasedOnHeaders(reader);
+                
                 
                 while (reader.Read())
                 {
