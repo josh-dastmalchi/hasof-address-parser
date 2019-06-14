@@ -1,6 +1,7 @@
 ﻿using ExcelDataReader;
 using GoogleMapsApi;
 using GoogleMapsApi.Entities.Geocoding.Request;
+using GoogleMapsApi.Entities.Geocoding.Response;
 using GoogleMapsApi.Entities.PlacesDetails.Request;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Status = GoogleMapsApi.Entities.Geocoding.Response.Status;
 
 namespace Hasof.AddressParser
 {
@@ -99,7 +99,7 @@ namespace Hasof.AddressParser
                     {
                         if (placesDetailsResponse.Result.Types.Contains("locality") || placesDetailsResponse.Result.Types.Contains("post_box"))
                         {
-                            errors.Add($"Google returned an address for the vendor {vendors[index].Name} that didn't look like a normal address. Ignoring it.");
+                            errors.Add($"Google returned an address for the vendor {vendors[index].Name} that didn\"t look like a normal address. Ignoring it.");
                         }
                         else
                         {
@@ -111,8 +111,10 @@ namespace Hasof.AddressParser
                             var postalCode = result.AddressComponents.SingleOrDefault(x => x.Types.Contains("postal_code"))?.ShortName;
                             var partialMatchText = result.PartialMatch ? "// Partial match double check me!" : string.Empty;
                             var address = $"{streetNumber} {route}, {locality}, {state} {postalCode}";
-                            outputLines.Add(
-                                $"['<h2>{vendors[index].Name}</h2><p>{address}<br />{vendors[index].Phone}</p><a class=\"btn btn--clear btn--square uppercase\" href=\"{placesDetailsResponse.Result.URL}\" target=\"_blank\">Get Directions</a>', {result.Geometry.Location.Latitude}, {result.Geometry.Location.Longitude}],{partialMatchText}");
+                            // manually formatting json, what have I done
+                            outputLines.Add($"{{\"address\" : \"{address}\", \"phone\" : \"{vendors[index].Phone}\", \"googleMapsUrl\" : \"{placesDetailsResponse.Result.URL}\", \"latitude\": \"{result.Geometry.Location.Latitude}\", \"longitude\" :\"{result.Geometry.Location.Longitude}\", \"iconUrl\" : \"{vendors[index].IconUrl}\"}},{partialMatchText}");
+                            //outputLines.Add(
+                            //    $"[\"<h2>{vendors[index].Name}</h2><p>{address}<br />{vendors[index].Phone}</p><a class=\"btn btn--clear btn--square uppercase\" href=\"{placesDetailsResponse.Result.URL}\" target=\"_blank\">Get Directions</a>\", {result.Geometry.Location.Latitude}, {result.Geometry.Location.Longitude}],{partialMatchText}");
 
                         }
                     }
@@ -168,13 +170,19 @@ namespace Hasof.AddressParser
         }
         void Form1_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
         }
 
         async void Form1_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            await ParseFile(files.First());
+            if (files.Any())
+            {
+                await ParseFile(files.First());
+            }
         }
     }
 }

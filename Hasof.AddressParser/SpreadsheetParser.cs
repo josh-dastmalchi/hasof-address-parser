@@ -15,20 +15,20 @@ namespace Hasof.AddressParser
         int? stateIndex;
         int? zipIndex;
         int? locationIndex;
-        
+        int iconIndex;
+
         public List<Vendor> Parse(IExcelDataReader reader)
         {
-            var customers = new List<Vendor>();
+            var vendors = new List<Vendor>();
             SetIndexesBasedOnHeaders(reader);
-            do
-            {
-                
-                
+           //do
+            //{
                 while (reader.Read())
                 {
                     try
                     {
                         string address;
+                        string iconUrl;
                         var name = GetValue(reader, nameIndex);
                         var phone = PhoneFormatter.Format(GetValue(reader, phoneIndex));
                         if (locationIndex.HasValue)
@@ -52,13 +52,17 @@ namespace Hasof.AddressParser
                         {
                             continue;
                         }
-                        var customer = new Vendor
+
+                        iconUrl = GetValue(reader, iconIndex);
+
+                        var vendor = new Vendor
                         {
                             Name = name,
                             Address = address,
-                            Phone = phone
+                            Phone = phone,
+                            IconUrl = iconUrl,
                         };
-                        customers.Add(customer);
+                        vendors.Add(vendor);
                     }
                     catch (Exception e)
                     {
@@ -66,9 +70,9 @@ namespace Hasof.AddressParser
                         throw;
                     }
                 }
-            } while (reader.NextResult());
+            //} while (reader.NextResult());
 
-            return customers;
+            return vendors;
         }
 
         private void SetIndexesBasedOnHeaders(IExcelDataReader reader)
@@ -88,6 +92,7 @@ namespace Hasof.AddressParser
             var zips = headers.Where(x => x.Contains("zip") || x.Contains("postal")).ToList();
             var phones = headers.Where(x => x.Contains("phone")).ToList();
             var locations = headers.Where(x => x.Contains("location")).ToList();
+            var icons = headers.Where(x => x.Contains("icon")).ToList();
 
             if (cities.Count > 1)
             {
@@ -115,6 +120,11 @@ namespace Hasof.AddressParser
                 throw new ParsingFormatException("More than one column was identified as a location: " + string.Join(" , ", locations));
             }
 
+            if (icons.Count > 1)
+            {
+                throw new ParsingFormatException("More than one column was identified as an icon: " + string.Join(" , ", icons));
+            }
+
             var name = names.SingleOrDefault();
             
             if (name == null)
@@ -128,9 +138,14 @@ namespace Hasof.AddressParser
                 throw new ParsingFormatException("There must be a column containing the phone number.");
             }
 
+            var icon = icons.SingleOrDefault();
+            if (icon == null)
+            {
+                throw new ParsingFormatException("There must be a column containing the icon url.");
+            }
             nameIndex = headers.IndexOf(name);
             phoneIndex = headers.IndexOf(phone);
-
+            iconIndex = headers.IndexOf(icon);
             var location = locations.FirstOrDefault();
             if (location != null)
             {
@@ -143,6 +158,8 @@ namespace Hasof.AddressParser
             var city = cities.FirstOrDefault();
             var state = states.FirstOrDefault();
             var zip = zips.FirstOrDefault();
+
+
             if (street1 == null || city == null || state == null || zip == null)
             {
                 throw new ParsingFormatException("There must either be a column for location, or columns for all of: street, city, state, zip");
@@ -156,13 +173,21 @@ namespace Hasof.AddressParser
             {
                 street2Index = headers.IndexOf(street2);
             }
+
         }
 
         
         private string GetValue(IExcelDataReader reader, int ordinal)
         {
-            var obj = reader.GetValue(ordinal);
-            return Convert.ToString(obj);
+            try
+            {
+                var obj = reader.GetValue(ordinal);
+                return Convert.ToString(obj);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
