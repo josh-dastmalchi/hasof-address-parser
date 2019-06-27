@@ -103,7 +103,6 @@ namespace Hasof.AddressParser
                         }
                         else
                         {
-
                             var streetNumber = result.AddressComponents.SingleOrDefault(x => x.Types.Contains("street_number"))?.ShortName;
                             var route = result.AddressComponents.SingleOrDefault(x => x.Types.Contains("route"))?.ShortName;
                             var locality = result.AddressComponents.SingleOrDefault(x => x.Types.Contains("locality"))?.ShortName;
@@ -112,9 +111,8 @@ namespace Hasof.AddressParser
                             var partialMatchText = result.PartialMatch ? "// Partial match double check me!" : string.Empty;
                             var address = $"{streetNumber} {route}, {locality}, {state} {postalCode}";
                             // manually formatting json, what have I done
-                            outputLines.Add($"{{\"address\" : \"{address}\", \"phone\" : \"{vendors[index].Phone}\", \"googleMapsUrl\" : \"{placesDetailsResponse.Result.URL}\", \"latitude\": \"{result.Geometry.Location.Latitude}\", \"longitude\" :\"{result.Geometry.Location.Longitude}\", \"iconUrl\" : \"{vendors[index].IconUrl}\"}},{partialMatchText}");
-                            //outputLines.Add(
-                            //    $"[\"<h2>{vendors[index].Name}</h2><p>{address}<br />{vendors[index].Phone}</p><a class=\"btn btn--clear btn--square uppercase\" href=\"{placesDetailsResponse.Result.URL}\" target=\"_blank\">Get Directions</a>\", {result.Geometry.Location.Latitude}, {result.Geometry.Location.Longitude}],{partialMatchText}");
+                            outputLines.Add(
+                                $"{{\"name\" : \"{vendors[index].Name}\", \"address\" : \"{address}\", \"phone\" : \"{vendors[index].Phone}\", \"googleMapsUrl\" : \"{placesDetailsResponse.Result.URL}\", \"latitude\": \"{result.Geometry.Location.Latitude}\", \"longitude\" :\"{result.Geometry.Location.Longitude}\", \"iconUrl\" : \"{vendors[index].IconUrl}\"}},{partialMatchText}");
 
                         }
                     }
