@@ -187,6 +187,19 @@ namespace Hasof.AddressParser
             phoneIndex = headers.IndexOf(phone);
             iconIndex = headers.IndexOf(icon);
 
+            if (carriesStraight.Any())
+            {
+                straightIndex = headers.IndexOf(carriesStraight[0]);
+            }
+            if (carriesCask.Any())
+            {
+                caskIndex = headers.IndexOf(carriesStraight[0]);
+            }
+            if (carriesRum.Any())
+            {
+                rumIndex = headers.IndexOf(carriesStraight[0]);
+            }
+
             var location = locations.FirstOrDefault();
             if (location != null)
             {
@@ -215,18 +228,7 @@ namespace Hasof.AddressParser
                 street2Index = headers.IndexOf(street2);
             }
 
-            if (carriesStraight.Any())
-            {
-                straightIndex = headers.IndexOf(carriesStraight[0]);
-            }
-            if (carriesCask.Any())
-            {
-                caskIndex = headers.IndexOf(carriesStraight[0]);
-            }
-            if (carriesRum.Any())
-            {
-                rumIndex = headers.IndexOf(carriesStraight[0]);
-            }
+
 
         }
 

@@ -112,7 +112,7 @@ namespace Hasof.AddressParser
                             var address = $"{streetNumber} {route}, {locality}, {state} {postalCode}";
                             // manually formatting json, what have I done
                             outputLines.Add(
-                                $"{{\"name\" : \"{vendors[index].Name}\", \"address\" : \"{address}\", \"phone\" : \"{vendors[index].Phone}\", \"carriesStraightBourbon\" : \"{vendors[index].CarriesStraightBourbon}\", \"carriesCaskStrengthStraightBourbon\" : \"{vendors[index].CarriesCaskStrengthStraightBourbon}\", \"carriesBarrelRestedGin\" : \"{vendors[index].CarriesBarrelRestedGin}\", \"googleMapsUrl\" : \"{placesDetailsResponse.Result.URL}\", \"latitude\": \"{result.Geometry.Location.Latitude}\", \"longitude\" :\"{result.Geometry.Location.Longitude}\", \"iconUrl\" : \"{vendors[index].IconUrl}\"}},{partialMatchText}");
+                                $"{{\"name\" : \"{vendors[index].Name}\", \"address\" : \"{address}\", \"phone\" : \"{vendors[index].Phone}\", \"carriesStraightBourbon\" : {vendors[index].CarriesStraightBourbon.ToString().ToLower()}, \"carriesCaskStrengthStraightBourbon\" : {vendors[index].CarriesCaskStrengthStraightBourbon.ToString().ToLower()}, \"carriesBarrelRestedGin\" : {vendors[index].CarriesBarrelRestedGin.ToString().ToLower()}, \"googleMapsUrl\" : \"{placesDetailsResponse.Result.URL}\", \"latitude\": \"{result.Geometry.Location.Latitude}\", \"longitude\" :\"{result.Geometry.Location.Longitude}\", \"iconUrl\" : \"{vendors[index].IconUrl}\"}},{partialMatchText}");
 
                         }
                     }
