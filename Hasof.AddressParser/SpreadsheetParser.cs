@@ -17,7 +17,7 @@ namespace Hasof.AddressParser
         int? locationIndex;
         int iconIndex;
         int? straightIndex;
-        int? rumIndex;
+        int? ginIndex;
         int? caskIndex;
         public List<Vendor> Parse(IExcelDataReader reader)
         {
@@ -65,9 +65,9 @@ namespace Hasof.AddressParser
                         carriesStraight = IsTruthy(GetValue(reader, straightIndex.Value));
                     }
 
-                    if (rumIndex.HasValue)
+                    if (ginIndex.HasValue)
                     {
-                        carriesRum = IsTruthy(GetValue(reader, rumIndex.Value));
+                        carriesRum = IsTruthy(GetValue(reader, ginIndex.Value));
                     }
 
                     if (caskIndex.HasValue)
@@ -117,8 +117,8 @@ namespace Hasof.AddressParser
             var locations = headers.Where(x => x.Contains("location")).ToList();
             var icons = headers.Where(x => x.Contains("icon")).ToList();
             var carriesStraight = headers.Where(x => string.Equals("straight bourbon", x, StringComparison.OrdinalIgnoreCase)).ToList();
-            var carriesRum = headers.Where(x => string.Equals("Cask Strength Straight Bourbon", x, StringComparison.OrdinalIgnoreCase)).ToList();
-            var carriesCask = headers.Where(x => string.Equals("Barrel Rested Gin", x, StringComparison.OrdinalIgnoreCase)).ToList();
+            var carriesCask = headers.Where(x => string.Equals("Cask Strength Straight Bourbon", x, StringComparison.OrdinalIgnoreCase)).ToList();
+            var carriesGin = headers.Where(x => string.Equals("Barrel Rested Gin", x, StringComparison.OrdinalIgnoreCase)).ToList();
 
             if (cities.Count > 1)
             {
@@ -156,7 +156,7 @@ namespace Hasof.AddressParser
                 throw new ParsingFormatException("More than one column was identified as an icon: " + string.Join(" , ", icons));
             }
 
-            if (carriesRum.Count > 1)
+            if (carriesCask.Count > 1)
             {
                 throw new ParsingFormatException("More than one column was identified as an icon: " + string.Join(" , ", icons));
             }
@@ -193,11 +193,11 @@ namespace Hasof.AddressParser
             }
             if (carriesCask.Any())
             {
-                caskIndex = headers.IndexOf(carriesStraight[0]);
+                caskIndex = headers.IndexOf(carriesCask[0]);
             }
-            if (carriesRum.Any())
+            if (carriesGin.Any())
             {
-                rumIndex = headers.IndexOf(carriesStraight[0]);
+                ginIndex = headers.IndexOf(carriesGin[0]);
             }
 
             var location = locations.FirstOrDefault();
