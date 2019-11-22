@@ -26,11 +26,11 @@ namespace Hasof.AddressParser
         {
             try
             {
+                ConfigurationManager.RefreshSection("appSettings");
                 string apiKey = ConfigurationManager.AppSettings["google-maps-api-key"];
                 if (string.IsNullOrEmpty(apiKey))
                 {
                     MessageBox.Show("You forgot to put the API key into the configuration file.");
-                    ConfigurationManager.RefreshSection("appSettings");
                     return;
                 }
                 Enabled = false;
